@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Config;
 
 class NotifyUseCase
 {
-    public function __construct(private LineMessageApiRepository $messageRepository)
+    public function __construct(private LineMessageApiRepository $lineMessageApiRepository)
     {
     }
 
@@ -19,13 +19,12 @@ class NotifyUseCase
         }
 
         $makeMessage = app()->make(MakeNotifyMessage::class);
-        $message = $makeMessage($params);
 
-        $this->messageRepository->push(
+        $this->lineMessageApiRepository->push(
             [
                 [
                     'type' => 'text',
-                    'text' => $message,
+                    'text' => $makeMessage($params),
                 ]
             ],
             Config::get('const.fayc4_send_to')

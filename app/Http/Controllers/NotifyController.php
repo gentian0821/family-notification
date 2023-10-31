@@ -8,9 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class NotifyController extends Controller
 {
-    public function __invoke(Request $request, NotifyUseCase $useCase): Response
+    public function __invoke(Request $request, NotifyUseCase $notifyUseCase): Response
     {
-        $useCase($request->input());
+        $notifyUseCase($request->input());
 
         return response()->json(['ok']);
     }
