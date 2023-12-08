@@ -38,4 +38,17 @@ class LineMessageApiRepository
 
         return $this->guzzleClient->request('POST', Config::get('const.line_push_api'), $options);
     }
+
+    public function reply(array $messages, string $replyToken): ResponseInterface
+    {
+        $options = [
+            'json' => [
+                "replyToken" => $replyToken,
+                "messages" => $messages
+            ],
+            'headers' => $this->headers,
+        ];
+
+        return $this->guzzleClient->request('POST', Config::get('const.line_reply_api'), $options);
+    }
 }
