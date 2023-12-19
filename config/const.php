@@ -2,7 +2,7 @@
 
 return [
     // app settings
-    'base_url' => 'https://fayc4.onrender.com',
+    'base_url' => 'https://family-notification.onrender.com',
     'app_api_key' => env('APP_API_KEY'),
 
     // Line Settings
@@ -16,9 +16,14 @@ return [
 
     // Google Settings
     'google_application_credential' => env('GOOGLE_APPLICATION_CREDENTIALS'),
-    'google_api_credential' => env("GOOGLE_API_CREDENTIAL"),
-    'google_api_key' => env("GOOGLE_API_KEY"),
+    'google_api_credential' => env('GOOGLE_API_CREDENTIAL'),
+    'google_api_key' => env('GOOGLE_API_KEY'),
     'cloud_vision_base_url' => 'https://vision.googleapis.com',
     'cloud_vision_annotate_api' => '/v1/images:annotate',
     'calendar_id' => env("GOOGLE_CALENDAR_ID"),
+
+    // Open Weather Settings
+    'open_weather_base_url' => 'https://api.openweathermap.org',
+    'open_weather_api_weather' => '/data/2.5/forecast',
+    'open_weather_api_key' => env('OPEN_WEATHER_API_KEY'),
 ];
