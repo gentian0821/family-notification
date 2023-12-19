@@ -8,7 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CallbackController extends Controller
 {
-    public function __invoke(Request $request, CallbackUseCase $callbackUseCase): Response
+    public function index()
+    {
+        return response()->json(['ok']);
+    }
+
+    public function store(Request $request, CallbackUseCase $callbackUseCase): Response
     {
         $callbackUseCase($request->input());
 

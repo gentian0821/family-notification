@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CallbackController;
 use App\Http\Controllers\NotifyController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\WeatherController;
@@ -21,4 +22,5 @@ Route::middleware([AuthenticateApiToken::class])-> group(function () {
     Route::post('notify', NotifyController::class);
     Route::get('schedule', ScheduleController::class);
     Route::get('weather', WeatherController::class);
+    Route::resource('callback', CallbackController::class);
 });
