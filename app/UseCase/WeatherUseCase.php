@@ -2,7 +2,6 @@
 
 namespace App\UseCase;
 
-use App\Domains\MakeScheduleMessage;
 use App\Domains\MakeWeatherMessage;
 use App\Repositories\OpenWeatherRepository;
 use App\Repositories\LineMessageApiRepository;

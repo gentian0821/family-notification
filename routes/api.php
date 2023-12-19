@@ -22,5 +22,6 @@ Route::middleware([AuthenticateApiToken::class])-> group(function () {
     Route::post('notify', NotifyController::class);
     Route::get('schedule', ScheduleController::class);
     Route::get('weather', WeatherController::class);
-    Route::resource('callback', CallbackController::class);
 });
+
+Route::resource('callback', CallbackController::class);
