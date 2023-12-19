@@ -20,5 +20,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware([AuthenticateApiToken::class])-> group(function () {
     Route::post('notify', NotifyController::class);
     Route::get('schedule', ScheduleController::class);
-    Route::resource('weather', WeatherController::class);
+    Route::get('weather', WeatherController::class);
 });
