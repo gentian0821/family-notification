@@ -3,9 +3,7 @@
 namespace App\UseCase;
 
 use App\Domains\AnalyzeMessage;
-use App\Domains\MakeNotifyMessage;
 use App\Repositories\LineMessageApiRepository;
-use Illuminate\Support\Facades\Config;
 
 class CallbackUseCase
 {
@@ -22,15 +20,8 @@ class CallbackUseCase
         }
 
         $makeMessage = app()->make(AnalyzeMessage::class);
+        $messages = $makeMessage($params['events'][0]);
 
-        $this->lineMessageApiRepository->reply(
-            [
-                [
-                    'type' => 'text',
-                    'text' => $makeMessage($params),
-                ]
-            ],
-            Config::get('const.fayc4_send_to')
-        );
+        $this->lineMessageApiRepository->reply($messages, $params["events"][0]['replyToken']);
     }
 }
