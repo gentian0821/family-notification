@@ -22,6 +22,9 @@ return [
     'cloud_vision_annotate_api' => '/v1/images:annotate',
     'calendar_id' => env("GOOGLE_CALENDAR_ID"),
 
+    // Gemini Settings
+    'gemini_contents_api' => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=' . env('GEMINI_API_KEY'),
+
     // Open Weather Settings
     'open_weather_base_url' => 'https://api.openweathermap.org',
     'open_weather_api_weather' => '/data/2.5/forecast',
