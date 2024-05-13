@@ -32,7 +32,46 @@ class AnalyzeMessage
             return [$result];
         }
 
-        return $this->defaultMessages($events);
+        // return $this->defaultMessages($events);
+        return $this->replyFromGemini($events);
+    }
+
+    private function replyFromGemini($events)
+    {
+        $client = new Client([
+            'headers' => [
+                'Content-Type' => 'application/json',
+            ]
+        ]);
+
+        $response = $client->request('POST',  Config::get('const.gemini_contents_api'), [
+            'json' => [
+                'contents' => [
+                    'parts' => [
+                        'text' => $events['message']["text"],
+                    ],
+                    'role' => 'user'
+                ],
+                'systemInstruction' => [
+                    'parts' => [
+                        'text' => 'あなたの名前は「ふぁいしーふぉー」です。語尾は「だよー」です。一人称は「ふぁいしーふぉー」です。性別は女の子です。',
+                    ],
+                    'role' => 'model'
+                ]
+            ]
+        ]);
+
+        $body = json_decode($response->getBody(), true);
+
+        Log::info(print_r($body, true));
+        Log::info($body['candidates'][0]['content']['parts'][0]['text']);
+
+        return [
+            [
+                'type' => 'text',
+                'text' => Str::replaceFirst("\n", '', $body['candidates'][0]['content']['parts'][0]['text'])
+            ]
+        ];
     }
 
     private function image(array $message): array
