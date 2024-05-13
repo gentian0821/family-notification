@@ -6,6 +6,10 @@ use App\Repositories\LineMessageApiDataRepository;
 use App\Repositories\GoogleVisionRepository;
 use App\Repositories\GoogleLanguageRepository;
 use App\Repositories\GoogleTranslateRepository;
+use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class AnalyzeMessage
 {
