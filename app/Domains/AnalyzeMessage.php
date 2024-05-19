@@ -47,7 +47,7 @@ class AnalyzeMessage
     {
         $client = Gemini::client(Config::get('const.gemini_api_key'));
 
-        $histories = apc_fetch('chat_' . $events['replyToken']);
+        $histories = apcu_fetch('chat_' . $events['replyToken']);
         $historyRequests = [];
         foreach ($histories as $history) {
             $historyRequests[] = Content::text($history['message'], $history['role']);
@@ -59,7 +59,7 @@ class AnalyzeMessage
 
         array_unshift($histories, ['message' => $events['message']["text"], 'role' => 'user']);
         array_unshift($histories, ['message' => $replyMessage, 'role' => 'model']);
-        apc_store('chat_' . $events['replyToken'], $histories);
+        apcu_store('chat_' . $events['replyToken'], $histories);
 
         // $client = new Client([
         //     'headers' => [
