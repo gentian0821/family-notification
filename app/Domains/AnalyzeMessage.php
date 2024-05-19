@@ -49,10 +49,13 @@ class AnalyzeMessage
 
         $histories = apcu_fetch('chat_' . $events['replyToken']);
         $historyRequests = [];
-        foreach ($histories as $history) {
-            $historyRequests[] = Content::text($history['message'], $history['role']);
+        if (!empty($history)) {
+            foreach ($histories as $history) {
+                $historyRequests[] = Content::text($history['message'], $history['role']);
+            }
+        } else {
+            $histories = [];
         }
-
         $chat = $client->geminiPro()->startChat($historyRequests);
         $response = $chat->sendMessage($events['message']["text"]);
         $replyMessage = $response->text();
