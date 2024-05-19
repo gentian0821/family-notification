@@ -24,6 +24,7 @@ return [
 
     // Gemini Settings
     'gemini_contents_api' => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key=' . env('GEMINI_API_KEY'),
+    'gemini_api_key' => env('GEMINI_API_KEY'),
 
     // Open Weather Settings
     'open_weather_base_url' => 'https://api.openweathermap.org',

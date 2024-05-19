@@ -6,10 +6,13 @@ use App\Repositories\LineMessageApiDataRepository;
 use App\Repositories\GoogleVisionRepository;
 use App\Repositories\GoogleLanguageRepository;
 use App\Repositories\GoogleTranslateRepository;
+use Gemini;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use GeminiAPI\Client as GeminiClient;
+use GeminiAPI\Resources\Content;
 
 class AnalyzeMessage
 {
@@ -42,38 +45,51 @@ class AnalyzeMessage
 
     private function replyFromGemini($events)
     {
-        $client = new Client([
-            'headers' => [
-                'Content-Type' => 'application/json',
-            ]
-        ]);
+        $client = Gemini::client(Config::get('const.gemini_api_key'));
 
-        $response = $client->request('POST',  Config::get('const.gemini_contents_api'), [
-            'json' => [
-                'contents' => [
-                    'parts' => [
-                        'text' => $events['message']["text"],
-                    ],
-                    'role' => 'user'
-                ],
-                'systemInstruction' => [
-                    'parts' => [
-                        'text' => 'あなたの名前は「ふぁいしーふぉー」です。語尾は「だよー」です。一人称は「ふぁいしーふぉー」です。性別は女の子です。',
-                    ],
-                    'role' => 'model'
-                ]
-            ]
-        ]);
+        $histories = apc_fetch('chat_' . $events['replyToken']);
+        $historyRequests = [];
+        foreach ($histories as $history) {
+            $historyRequests[] = Content::text($history['message'], $history['role']);
+        }
 
-        $body = json_decode($response->getBody(), true);
+        $chat = $client->geminiPro()->startChat($historyRequests);
+        $response = $chat->sendMessage($events['message']["text"]);
+        $replyMessage = $response->text();
 
-        Log::info(print_r($body, true));
-        Log::info($body['candidates'][0]['content']['parts'][0]['text']);
+        array_unshift($histories, ['message' => $events['message']["text"], 'role' => 'user']);
+        array_unshift($histories, ['message' => $replyMessage, 'role' => 'model']);
+        apc_store('chat_' . $events['replyToken'], $histories);
+
+        // $client = new Client([
+        //     'headers' => [
+        //         'Content-Type' => 'application/json',
+        //     ]
+        // ]);
+
+        // $response = $client->request('POST',  Config::get('const.gemini_contents_api'), [
+        //     'json' => [
+        //         'contents' => [
+        //             'parts' => [
+        //                 'text' => $events['message']["text"],
+        //             ],
+        //             'role' => 'user'
+        //         ],
+        //         'systemInstruction' => [
+        //             'parts' => [
+        //                 'text' => 'あなたの名前は「ふぁいしーふぉー」です。語尾は「だよー」です。一人称は「ふぁいしーふぉー」です。性別は女の子です。',
+        //             ],
+        //             'role' => 'model'
+        //         ]
+        //     ]
+        // ]);
+
+        Log::info($replyMessage);
 
         return [
             [
                 'type' => 'text',
-                'text' => Str::replaceFirst("\n", '', $body['candidates'][0]['content']['parts'][0]['text'])
+                'text' => Str::replaceFirst("\n", '', $replyMessage)
             ]
         ];
     }

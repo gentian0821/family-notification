@@ -6,14 +6,16 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "guzzlehttp/guzzle": "^7.2",
-        "laravel/framework": "^10.10",
-        "laravel/sanctum": "^3.2",
+        "ext-bcmath": "*",
+        "gemini-api-php/client": "*",
+        "google-gemini-php/client": "*",
         "google/apiclient": "^2.15",
         "google/cloud-language": "^0.31.0",
         "google/cloud-translate": "^1.15",
         "google/cloud-vision": "^1.7.5",
-        "ext-bcmath": "*"
+        "guzzlehttp/guzzle": "^7.2",
+        "laravel/framework": "^10.10",
+        "laravel/sanctum": "^3.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
