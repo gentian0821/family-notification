@@ -83,6 +83,9 @@ class AnalyzeMessage
 
         $parts = [['parts' => ['text' => $events['message']["text"]], 'role' => 'user']];
         $histories = apcu_fetch('chat_' . $events['replyToken']);
+
+        Log::info(print_r($histories, true));
+
         $historyRequests = [];
         if (!empty($histories)) {
             foreach ($histories as $history) {
@@ -91,8 +94,6 @@ class AnalyzeMessage
         } else {
             $histories = [];
         }
-
-        Log::info(print_r($histories, true));
 
         $response = $client->request('POST',  Config::get('const.gemini_contents_api'), [
             'json' => [
@@ -115,6 +116,7 @@ class AnalyzeMessage
         array_unshift($histories, ['message' => $body['candidates'][0]['content']['parts'][0]['text'], 'role' => 'model']);
         apcu_store('chat_' . $events['replyToken'], $histories);
 
+        Log::info(print_r(apcu_fetch('chat_' . $events['replyToken']), true));
         return [
             [
                 'type' => 'text',
