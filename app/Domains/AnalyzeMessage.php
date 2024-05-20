@@ -6,13 +6,11 @@ use App\Repositories\LineMessageApiDataRepository;
 use App\Repositories\GoogleVisionRepository;
 use App\Repositories\GoogleLanguageRepository;
 use App\Repositories\GoogleTranslateRepository;
-use Gemini;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use GeminiAPI\Client as GeminiClient;
-use GeminiAPI\Resources\Content;
 
 class AnalyzeMessage
 {
@@ -45,62 +43,20 @@ class AnalyzeMessage
 
     private function replyFromGemini($events)
     {
-        $client = Gemini::client(Config::get('const.gemini_api_key'));
-
-        $source = $events['source'];
-        $cacheKey = 'chat_' . isset($source['groupId']) ? $source['groupId'] : $source['userId'];
-
-        // $histories = apcu_fetch($cacheKey);
-        // $historyRequests = [];
-        // if (!empty($history)) {
-        //     foreach ($histories as $history) {
-        //         $historyRequests[] = Content::text($history['message'], $history['role']);
-        //     }
-        // } else {
-        //     $histories = [];
-        // }
-        // $chat = $client->geminiPro()->startChat($historyRequests);
-        // $response = $chat->sendMessage($events['message']["text"]);
-        // $replyMessage = $response->text();
-
-        // array_unshift($histories, ['message' => $events['message']["text"], 'role' => 'user']);
-        // array_unshift($histories, ['message' => $replyMessage, 'role' => 'model']);
-        // apcu_store($cacheKey, $histories);
-
-        // Log::info($replyMessage);
-        // Log::info($histories);
-
-        // return [
-        //     [
-        //         'type' => 'text',
-        //         'text' => Str::replaceFirst("\n", '', $replyMessage)
-        //     ]
-        // ];
-
         $client = new Client([
             'headers' => [
                 'Content-Type' => 'application/json',
             ]
         ]);
 
-
-        $parts = [['parts' => ['text' => $events['message']["text"]], 'role' => 'user']];
-        $histories = apcu_fetch($cacheKey);
-
-        Log::info(print_r($histories, true));
-
-        $historyRequests = [];
-        if (!empty($histories) &&  $events['message']["text"] !== '忘れて' && count($histories) < 10) {
-            foreach ($histories as $history) {
-                $parts[] = ['parts' => ['text' => $history['message']], 'role' => $history['role']];
-            }
-        } else {
-            $histories = [];
-        }
-
         $response = $client->request('POST',  Config::get('const.gemini_contents_api'), [
             'json' => [
-                'contents' => $parts,
+                'contents' => [
+                    'parts' => [
+                        'text' => $events['message']["text"],
+                    ],
+                    'role' => 'user'
+                ],
                 'systemInstruction' => [
                     'parts' => [
                         'text' => 'あなたの名前は「ふぁいしーふぉー」です。語尾は「だよー」です。一人称は「ふぁいしーふぉー」です。性別は女の子です。',
@@ -113,16 +69,8 @@ class AnalyzeMessage
         $body = json_decode($response->getBody(), true);
 
         Log::info(print_r($body, true));
+        Log::info($body['candidates'][0]['content']['parts'][0]['text']);
 
-        if ($events['message']["text"] !== '忘れて') {
-            array_unshift($histories, ['message' => $events['message']["text"], 'role' => 'user']);
-            array_unshift($histories, ['message' => $body['candidates'][0]['content']['parts'][0]['text'], 'role' => 'model']);
-            apcu_store($cacheKey, $histories);
-        }
-        Log::info(print_r($histories, true));
-
-        Log::info(print_r(apcu_fetch($cacheKey), true));
-        Log::info(print_r($events, true));
         return [
             [
                 'type' => 'text',
