@@ -4,6 +4,7 @@ namespace App\UseCase;
 
 use App\Domains\AnalyzeMessage;
 use App\Repositories\LineMessageApiRepository;
+use Illuminate\Support\Facades\Log;
 
 class CallbackUseCase
 {
@@ -18,7 +19,7 @@ class CallbackUseCase
         if (empty($params)) {
             return;
         }
-
+        Log::info(print_r($params, true));
         $makeMessage = app()->make(AnalyzeMessage::class);
         $messages = $makeMessage($params['events'][0]);
 
