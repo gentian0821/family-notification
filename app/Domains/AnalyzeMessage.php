@@ -90,7 +90,7 @@ class AnalyzeMessage
         Log::info(print_r($histories, true));
 
         $historyRequests = [];
-        if (!empty($histories)) {
+        if (!empty($histories) &&  $events['message']["text"] !== '忘れて' && count($histories) < 10) {
             foreach ($histories as $history) {
                 $parts[] = ['parts' => ['text' => $history['message']], 'role' => $history['role']];
             }
@@ -114,9 +114,11 @@ class AnalyzeMessage
 
         Log::info(print_r($body, true));
 
-        array_unshift($histories, ['message' => $events['message']["text"], 'role' => 'user']);
-        array_unshift($histories, ['message' => $body['candidates'][0]['content']['parts'][0]['text'], 'role' => 'model']);
-        apcu_store($cacheKey, $histories);
+        if ($events['message']["text"] !== '忘れて') {
+            array_unshift($histories, ['message' => $events['message']["text"], 'role' => 'user']);
+            array_unshift($histories, ['message' => $body['candidates'][0]['content']['parts'][0]['text'], 'role' => 'model']);
+            apcu_store($cacheKey, $histories);
+        }
         Log::info(print_r($histories, true));
 
         Log::info(print_r(apcu_fetch($cacheKey), true));
