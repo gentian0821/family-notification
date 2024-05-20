@@ -47,7 +47,9 @@ class AnalyzeMessage
     {
         $client = Gemini::client(Config::get('const.gemini_api_key'));
 
-        // $histories = apcu_fetch('chat_' . $events['replyToken']);
+        $cacheKey = 'chat_' . $events['source']["groupId"] ?? $events['source']["userId"];
+
+        // $histories = apcu_fetch($cacheKey);
         // $historyRequests = [];
         // if (!empty($history)) {
         //     foreach ($histories as $history) {
@@ -62,7 +64,7 @@ class AnalyzeMessage
 
         // array_unshift($histories, ['message' => $events['message']["text"], 'role' => 'user']);
         // array_unshift($histories, ['message' => $replyMessage, 'role' => 'model']);
-        // apcu_store('chat_' . $events['replyToken'], $histories);
+        // apcu_store($cacheKey, $histories);
 
         // Log::info($replyMessage);
         // Log::info($histories);
@@ -82,7 +84,7 @@ class AnalyzeMessage
 
 
         $parts = [['parts' => ['text' => $events['message']["text"]], 'role' => 'user']];
-        $histories = apcu_fetch('chat_' . $events['replyToken']);
+        $histories = apcu_fetch($cacheKey);
 
         Log::info(print_r($histories, true));
 
@@ -114,9 +116,9 @@ class AnalyzeMessage
 
         array_unshift($histories, ['message' => $events['message']["text"], 'role' => 'user']);
         array_unshift($histories, ['message' => $body['candidates'][0]['content']['parts'][0]['text'], 'role' => 'model']);
-        apcu_store('chat_' . $events['replyToken'], $histories);
+        apcu_store($cacheKey, $histories);
 
-        Log::info(print_r(apcu_fetch('chat_' . $events['replyToken']), true));
+        Log::info(print_r(apcu_fetch($cacheKey), true));
         Log::info(print_r($events, true));
         return [
             [
