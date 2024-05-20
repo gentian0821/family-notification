@@ -92,6 +92,7 @@ class AnalyzeMessage
             $histories = [];
         }
 
+        Log::info(print_r($histories, true));
 
         $response = $client->request('POST',  Config::get('const.gemini_contents_api'), [
             'json' => [
