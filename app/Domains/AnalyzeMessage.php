@@ -47,7 +47,8 @@ class AnalyzeMessage
     {
         $client = Gemini::client(Config::get('const.gemini_api_key'));
 
-        $cacheKey = 'chat_' . isset($events['source']["groupId"]) ? $events['source']["groupId"] : $events['source']["userId"];
+        $source = $events['source'];
+        $cacheKey = 'chat_' . $source['groupId'] ?? $events['userId'];
 
         // $histories = apcu_fetch($cacheKey);
         // $historyRequests = [];
