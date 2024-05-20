@@ -48,7 +48,7 @@ class AnalyzeMessage
         $client = Gemini::client(Config::get('const.gemini_api_key'));
 
         $source = $events['source'];
-        $cacheKey = 'chat_' . isset($source['groupId']) ? $source['groupId'] : $events['userId'];
+        $cacheKey = 'chat_' . isset($source['groupId']) ? $source['groupId'] : $source['userId'];
 
         // $histories = apcu_fetch($cacheKey);
         // $historyRequests = [];
@@ -113,11 +113,11 @@ class AnalyzeMessage
         $body = json_decode($response->getBody(), true);
 
         Log::info(print_r($body, true));
-        Log::info($body['candidates'][0]['content']['parts'][0]['text']);
 
         array_unshift($histories, ['message' => $events['message']["text"], 'role' => 'user']);
         array_unshift($histories, ['message' => $body['candidates'][0]['content']['parts'][0]['text'], 'role' => 'model']);
         apcu_store($cacheKey, $histories);
+        Log::info(print_r($histories, true));
 
         Log::info(print_r(apcu_fetch($cacheKey), true));
         Log::info(print_r($events, true));

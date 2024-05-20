@@ -19,7 +19,7 @@ class CallbackUseCase
         if (empty($params)) {
             return;
         }
-        Log::info(print_r($params, true));
+
         $makeMessage = app()->make(AnalyzeMessage::class);
         $messages = $makeMessage($params['events'][0]);
 
