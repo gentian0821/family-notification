@@ -117,7 +117,7 @@ class AnalyzeMessage
         apcu_store('chat_' . $events['replyToken'], $histories);
 
         Log::info(print_r(apcu_fetch('chat_' . $events['replyToken']), true));
-        Log::info(print_r($events['replyToken']));
+        Log::info(print_r($events));
         return [
             [
                 'type' => 'text',
