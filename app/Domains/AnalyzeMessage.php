@@ -81,12 +81,12 @@ class AnalyzeMessage
         ]);
 
 
-        $parts = [['parts' => ['role' => 'user', 'text' => $events['message']["text"]]]];
+        $parts = [['parts' => ['text' => $events['message']["text"]], 'role' => 'user']];
         $histories = apcu_fetch('chat_' . $events['replyToken']);
         $historyRequests = [];
         if (!empty($histories)) {
             foreach ($histories as $history) {
-                $parts[] = ['parts' => ['role' => $history['role'], 'text' => $history['message']]];
+                $parts[] = ['parts' => ['text' => $history['message']], 'role' => $history['role']];
             }
         } else {
             $histories = [];
