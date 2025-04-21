@@ -1,0 +1,13 @@
+version: "3" 
+
+services:
+  tax-web:
+    container_name: "family-notification-web"
+    build:
+      dockerfile: "./Dockerfile"
+    # ホスト側のポート:コンテナ側のポートを指定
+    ports:
+      - "8080:80"
+    # src配下のファイルをコンテナ内の~/va/www/html配下に配置
+    volumes:
+      - ".:/application"

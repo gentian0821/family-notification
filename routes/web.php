@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MusicDownloadController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/download-music', function () {
+    return view('download');
+});
+
+Route::post('/download', MusicDownloadController::class);

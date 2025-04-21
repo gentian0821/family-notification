@@ -6,12 +6,16 @@ COPY . /application
 WORKDIR /application
 
 ADD conf/nginx-site.conf /etc/nginx/sites-available/default.conf
+ADD conf/.htpasswd /etc/nginx/.htpasswd
 #ADD conf/nginx-site-ssl.conf /etc/nginx/sites-available/default-ssl.conf
 
 RUN apk add autoconf build-base
 
 RUN docker-php-ext-install bcmath
 RUN pecl install apcu && docker-php-ext-enable apcu
+
+RUN apk -U add yt-dlp
+RUN pip install yt-dlp -U
 
 # Image config
 ENV SKIP_COMPOSER 1
