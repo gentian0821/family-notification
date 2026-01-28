@@ -23,7 +23,7 @@ return [
     'calendar_id' => env("GOOGLE_CALENDAR_ID"),
 
     // Gemini Settings
-    'gemini_contents_api' => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' . env('GEMINI_API_KEY'),
+    'gemini_contents_api' => 'https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=' . env('GEMINI_API_KEY'),
     'gemini_api_key' => env('GEMINI_API_KEY'),
 
     // Open Weather Settings
