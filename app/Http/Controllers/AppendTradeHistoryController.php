@@ -11,13 +11,32 @@ class AppendTradeHistoryController extends Controller
 {
     public function __invoke(Request $request, GoogleSpreadSheetRepository $repository): Response
     {
-        // 方法1: JSONとしてデコード。第2引数をtrueにして連想配列にする
-        $trades = json_decode($request->getContent(), true);
+        // 生のデータを取得し、前後の空白や目に見えない改行を完全にトリミング
+        $rawContent = trim($request->getContent());
 
-        // デバッグ用: もしこれでも空なら、ログに生データを出す
+        // JSONデコード（第2引数 true で連想配列へ）
+        $trades = json_decode($rawContent, true);
+
+        // デコードに失敗した場合の調査用ロジック
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            $errorMsg = json_last_error_msg();
+            
+            // 特効薬：もう一度、より強力にクリーンアップして再試行
+            $cleanContent = preg_replace('/[[:cntrl:]]/', '', $rawContent); // 制御文字を全削除
+            $trades = json_decode($cleanContent, true);
+            
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                Log::error("JSON Decode Final Failure: " . $errorMsg);
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid JSON structure',
+                    'error_detail' => $errorMsg
+                ], 400);
+            }
+        }
+
         if (empty($trades)) {
-            Log::warning('MT4 Sync: Decoded data is empty. Raw content: ' . $request->getContent());
-            return response()->json(['message' => 'No data', 'debug' => 'Data was empty after decode'], 200);
+            return response()->json(['message' => 'No data'], 200);
         }
 
         $spreadsheetId = "1T1XLyCdC_mvYCN4lAplKlyNzNFreyifplXncTor2iWw";
