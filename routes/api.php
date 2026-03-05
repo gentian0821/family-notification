@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AppendTradeHistoryController;
 use App\Http\Controllers\CallbackController;
 use App\Http\Controllers\NotifyController;
 use App\Http\Controllers\ScheduleController;
@@ -24,4 +25,5 @@ Route::middleware([AuthenticateApiToken::class])-> group(function () {
     Route::get('weather', WeatherController::class);
 });
 
+Route::post('/mt4/sync', AppendTradeHistoryController::class);
 Route::resource('callback', CallbackController::class);
