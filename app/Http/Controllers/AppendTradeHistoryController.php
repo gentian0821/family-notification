@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Repositories\GoogleSpreadSheetRepository;
-use Illuminate\Support\Facades\Request;
+use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AppendTradeHistoryController extends Controller
