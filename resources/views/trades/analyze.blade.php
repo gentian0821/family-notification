@@ -27,15 +27,15 @@
             <form action="/trades/analyze" method="GET" class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label small">期間（開始）</label>
-                    <input type="date" name="from" class="form-control" value="{{ request('from') }}">
+                    <input type="date" name="from" class="form-control" value="{{ request('from', \Carbon\Carbon::now()->startOfMonth()->format('Y-m-d')) }}">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label small">期間（終了）</label>
-                    <input type="date" name="to" class="form-control" value="{{ request('to') }}">
+                    <input type="date" name="to" class="form-control" value="{{ request('to', \Carbon\Carbon::now()->format('Y-m-d')) }}">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small">初期証拠金</label>
-                    <input type="number" name="init" class="form-control" value="{{ request('init', 1000000) }}">
+                    <input type="number" name="init" class="form-control" value="{{ request('init', 500000) }}">
                 </div>
                 <div class="col-md-2">
                     <label class="form-label small">コメント検索</label>

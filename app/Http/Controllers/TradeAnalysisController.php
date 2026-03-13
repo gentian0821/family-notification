@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\UseCase\TradeAnalyzeUseCase;
+use Carbon\Carbon;
 
 class TradeAnalysisController extends Controller
 {
@@ -13,8 +14,8 @@ class TradeAnalysisController extends Controller
 
     public function index(Request $request)
     {
-        $fromDate = $request->query('from');
-        $toDate = $request->query('to');
+        $fromDate = $request->query('from', Carbon::now()->startOfMonth()->format('Y-m-d'));
+        $toDate   = $request->query('to',   Carbon::now()->format('Y-m-d'));
         $searchComment = $request->query('comment');
         $initialBalance = (float)$request->query('init', 1000000);
 
