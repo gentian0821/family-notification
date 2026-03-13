@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MusicDownloadController;
+use App\Http\Controllers\TradeAnalysisController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,3 +24,6 @@ Route::get('/download-music', function () {
 });
 
 Route::post('/download', MusicDownloadController::class);
+
+
+Route::get('/trades/analyze', [TradeAnalysisController::class, 'index']);
