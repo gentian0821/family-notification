@@ -24,7 +24,7 @@
     <div class="card">
         <div class="card-body">
             <h5 class="card-title mb-4">分析パラメータ設定</h5>
-            <form action="{{ url('/trades/analyze') }}" method="GET" class="row g-3">
+            <form action="/trades/analyze" method="GET" class="row g-3">
                 <div class="col-md-3">
                     <label class="form-label small">期間（開始）</label>
                     <input type="date" name="from" class="form-control" value="{{ request('from') }}">
