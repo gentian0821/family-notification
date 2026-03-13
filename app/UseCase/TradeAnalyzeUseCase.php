@@ -12,7 +12,7 @@ class TradeAnalyzeUseCase
     ) {
     }
 
-    public function __invoke(string $fromDate, string $toDate, string $searchComment, string $initialBalance): array
+    public function __invoke(?string $fromDate, ?string $toDate, ?string $searchComment, ?string $initialBalance): array
     {
         // --- ロジック開始 ---
         $sheet = str_contains($searchComment, 'EA3') || str_contains($searchComment, 'EA7') ? 'シート2' : 'シート1';
@@ -63,7 +63,14 @@ class TradeAnalyzeUseCase
             if (count($cols) < 16) continue;
 
             $comment = $cols[17] ?? '';
-            if ($searchComment && !str_contains($comment, $searchComment)) continue;
+
+            // 修正後
+            if ($searchComment) {
+                $keywords = array_filter(explode(' ', $searchComment));
+                foreach ($keywords as $keyword) {
+                    if (!str_contains($comment, $keyword)) continue 2;
+                }
+            }
 
             $rawDate = str_replace('.', '-', $cols[1]); 
             $tradeTime = Carbon::parse($rawDate . ' ' . $cols[2]);
