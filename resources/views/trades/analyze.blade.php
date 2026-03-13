@@ -156,6 +156,26 @@
                 <tbody>
                     <tr><th class="text-start ps-4">Trades</th><td>{{ $total_trades }}</td><td>{{ $buy_total }}</td><td>{{ $sell_total }}</td></tr>
                     <tr><th class="text-start ps-4">Win Rate</th><td>{{ $total_win_rate }}%</td><td>{{ $buy_win_rate }}%</td><td>{{ $sell_win_rate }}%</td></tr>
+                    <tr><th class="text-start ps-4">平均勝ち</th>
+                        <td class="value-plus">{{ number_format($avg_win, 2) }}</td>
+                        <td class="value-plus">{{ number_format($buy_avg_win, 2) }}</td>
+                        <td class="value-plus">{{ number_format($sell_avg_win, 2) }}</td>
+                    </tr>
+                    <tr><th class="text-start ps-4">平均負け</th>
+                        <td class="value-minus">-{{ number_format($avg_loss, 2) }}</td>
+                        <td class="value-minus">-{{ number_format($buy_avg_loss, 2) }}</td>
+                        <td class="value-minus">-{{ number_format($sell_avg_loss, 2) }}</td>
+                    </tr>
+                    <tr><th class="text-start ps-4">最大勝ち</th>
+                        <td class="value-plus">{{ number_format($stats['total']['max_win'], 2) }}</td>
+                        <td class="value-plus">{{ number_format($stats['buy']['max_win'], 2) }}</td>
+                        <td class="value-plus">{{ number_format($stats['sell']['max_win'], 2) }}</td>
+                    </tr>
+                    <tr><th class="text-start ps-4">最大負け</th>
+                        <td class="value-minus">-{{ number_format($stats['total']['max_loss'], 2) }}</td>
+                        <td class="value-minus">-{{ number_format($stats['buy']['max_loss'], 2) }}</td>
+                        <td class="value-minus">-{{ number_format($stats['sell']['max_loss'], 2) }}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

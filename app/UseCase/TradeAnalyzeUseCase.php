@@ -45,8 +45,8 @@ class TradeAnalyzeUseCase
 
         $stats = [
             'total' => ['win' => 0, 'loss' => 0, 'profit' => 0, 'loss_sum' => 0, 'max_win' => 0, 'max_loss' => 0, 'fee' => 0],
-            'buy'   => ['win' => 0, 'loss' => 0],
-            'sell'  => ['win' => 0, 'loss' => 0],
+            'buy'  => ['win' => 0, 'loss' => 0, 'max_win' => 0, 'max_loss' => 0, 'profit' => 0, 'loss_sum' => 0],
+            'sell' => ['win' => 0, 'loss' => 0, 'max_win' => 0, 'max_loss' => 0, 'profit' => 0, 'loss_sum' => 0],
         ];
 
         $balance = $initialBalance; 
@@ -101,17 +101,21 @@ class TradeAnalyzeUseCase
                 if (isset($dailyStats[$dayOfWeek])) $dailyStats[$dayOfWeek]['profit'] += $profit;
                 
                 $stats['total']['win']++;
-                $stats[$side]['win']++;
                 $stats['total']['profit'] += $profit;
                 $stats['total']['max_win'] = max($stats['total']['max_win'], $profit);
+                $stats[$side]['win']++;
+                $stats[$side]['profit'] += $profit;  // 追加
+                $stats[$side]['max_win'] = max($stats[$side]['max_win'], $profit);  // 追加
             } else {
                 $hourlyStats[$hour]['loss'] += abs($profit);
                 if (isset($dailyStats[$dayOfWeek])) $dailyStats[$dayOfWeek]['loss'] += abs($profit);
                 
                 $stats['total']['loss']++;
-                $stats[$side]['loss']++;
                 $stats['total']['loss_sum'] += abs($profit);
                 $stats['total']['max_loss'] = max($stats['total']['max_loss'], abs($profit));
+                $stats[$side]['loss']++;
+                $stats[$side]['loss_sum'] += abs($profit);  // 追加
+                $stats[$side]['max_loss'] = max($stats[$side]['max_loss'], abs($profit));  // 追加
             }
             $hourlyStats[$hour]['fee'] += $fee;
             if (isset($dailyStats[$dayOfWeek])) $dailyStats[$dayOfWeek]['fee'] += $fee;
@@ -184,7 +188,13 @@ class TradeAnalyzeUseCase
             'hourlyValues' => $hourlyValues,
             'dailyLabels' => $dailyLabels,
             'dailyStats' => $dailyStats,
-            'daily_profits' => array_values($dailyValues)
+            'daily_profits' => array_values($dailyValues),
+            'avg_win'  => $stats['total']['win']  > 0 ? $stats['total']['profit']   / $stats['total']['win']  : 0,
+            'avg_loss' => $stats['total']['loss'] > 0 ? $stats['total']['loss_sum'] / $stats['total']['loss'] : 0,
+            'buy_avg_win'   => $stats['buy']['win']    > 0 ? $stats['buy']['profit']      / $stats['buy']['win']    : 0,
+            'buy_avg_loss'  => $stats['buy']['loss']   > 0 ? $stats['buy']['loss_sum']    / $stats['buy']['loss']   : 0,
+            'sell_avg_win'  => $stats['sell']['win']   > 0 ? $stats['sell']['profit']     / $stats['sell']['win']   : 0,
+            'sell_avg_loss' => $stats['sell']['loss']  > 0 ? $stats['sell']['loss_sum']   / $stats['sell']['loss']  : 0,
         ];
     }
 }

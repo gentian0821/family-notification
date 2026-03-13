@@ -17,7 +17,7 @@ class TradeAnalysisController extends Controller
         $fromDate = $request->query('from', Carbon::now()->startOfMonth()->format('Y-m-d'));
         $toDate   = $request->query('to',   Carbon::now()->format('Y-m-d'));
         $searchComment = $request->query('comment');
-        $initialBalance = (float)$request->query('init', 1000000);
+        $initialBalance = (float)$request->query('init', 500000);
 
         $result = ($this->useCase)($fromDate, $toDate, $searchComment, $initialBalance);
 
